@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    .intro-header(style="background-image: url('http://s.guildomatic.com/239978/host/80/80778c26366faf2a73b75d6e84146d96.jpg')")
+    .intro-header(style="background-image: url('http://s1.funon.cc/img/orig/201608/09/57a98eb3cdf63.png')")
       .container
         .row
           .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
