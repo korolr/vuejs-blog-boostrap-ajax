@@ -3,6 +3,7 @@
 import Vue from '../instance/index'
 import VNode from './vnode'
 import { normalizeChildren } from './helpers/index'
+import { resolveConstructorOptions } from '../instance/init'
 import { activeInstance, callHook } from '../instance/lifecycle'
 import { resolveSlots } from '../instance/render'
 import { createElement } from './create-element'
@@ -32,6 +33,10 @@ export function createComponent (
     }
     return
   }
+
+  // resolve constructor options in case global mixins are applied after
+  // component constructor creation
+  resolveConstructorOptions(Ctor)
 
   // async component
   if (!Ctor.cid) {
@@ -236,7 +241,7 @@ function resolveAsyncComponent (
 }
 
 function extractProps (data: VNodeData, Ctor: Class<Component>): ?Object {
-  // we are only extrating raw values here.
+  // we are only extracting raw values here.
   // validation and default values are handled in the child
   // component itself.
   const propOptions = Ctor.options.props

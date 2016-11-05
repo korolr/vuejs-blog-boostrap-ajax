@@ -35,17 +35,14 @@
 		            <div class="navbar-header page-scroll">
 		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 		                    <span class="sr-only">Toggle navigation</span>
-		                    Menu <i class="fa fa-bars"></i>
+		                    <span>Menu</span> <i class="fa fa-bars"></i>
 		                </button>
-		                <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+		                <router-link to="/" class="navbar-brand">Vuejs Bootstrap</router-link>
 		            </div>
 
 		            <!-- Collect the nav links, forms, and other content for toggling -->
 		            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		                <ul class="nav navbar-nav navbar-right">
-		                    <li>
-		                        <router-link to="/brands"> Бренды</router-link>
-		                    </li>
 		                    <li>
 		                        <router-link to="/projects">  Проекты</router-link>
 		                    </li>
@@ -62,26 +59,16 @@
 		        <!-- /.container -->
 		    </nav>
 
+			</header>
 		    <!-- Page Header -->
 		    <!-- Set your background image for this header on the line below. -->
-		    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
-		        <div class="container">
-		            <div class="row">
-		                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-		                    <div class="site-heading">
-		                        <h1>Clean Blog</h1>
-		                        <hr class="small">
-		                        <span class="subheading">A Clean Blog Theme by Start Bootstrap</span>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		    </header>
 
-      </header>
+
+
+
 
       <router-view></router-view>
-
+			<Hello></Hello>
     </div>
 
     <script src="build/bundle.js"></script>

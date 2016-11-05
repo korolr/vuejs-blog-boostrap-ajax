@@ -2,6 +2,7 @@
 
 import { isIE } from 'core/util/env'
 import { addHandler, addProp, getBindingAttr } from 'compiler/helpers'
+import parseModel from 'web/util/model'
 
 let warn
 
@@ -25,11 +26,11 @@ export default function model (
     }
   }
   if (tag === 'select') {
-    genSelect(el, value)
+    genSelect(el, value, modifiers)
   } else if (tag === 'input' && type === 'checkbox') {
-    genCheckboxModel(el, value)
+    genCheckboxModel(el, value, modifiers)
   } else if (tag === 'input' && type === 'radio') {
-    genRadioModel(el, value)
+    genRadioModel(el, value, modifiers)
   } else {
     genDefaultModel(el, value, modifiers)
   }
@@ -37,7 +38,11 @@ export default function model (
   return true
 }
 
-function genCheckboxModel (el: ASTElement, value: string) {
+function genCheckboxModel (
+  el: ASTElement,
+  value: string,
+  modifiers: ?ASTModifiers
+) {
   if (process.env.NODE_ENV !== 'production' &&
     el.attrsMap.checked != null) {
     warn(
@@ -46,6 +51,7 @@ function genCheckboxModel (el: ASTElement, value: string) {
       'Declare initial values in the component\'s data option instead.'
     )
   }
+  const number = modifiers && modifiers.number
   const valueBinding = getBindingAttr(el, 'value') || 'null'
   const trueValueBinding = getBindingAttr(el, 'true-value') || 'true'
   const falseValueBinding = getBindingAttr(el, 'false-value') || 'false'
@@ -59,7 +65,7 @@ function genCheckboxModel (el: ASTElement, value: string) {
         '$$el=$event.target,' +
         `$$c=$$el.checked?(${trueValueBinding}):(${falseValueBinding});` +
     'if(Array.isArray($$a)){' +
-      `var $$v=${valueBinding},` +
+      `var $$v=${number ? '_n(' + valueBinding + ')' : valueBinding},` +
           '$$i=_i($$a,$$v);' +
       `if($$c){$$i<0&&(${value}=$$a.concat($$v))}` +
       `else{$$i>-1&&(${value}=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}` +
@@ -68,7 +74,11 @@ function genCheckboxModel (el: ASTElement, value: string) {
   )
 }
 
-function genRadioModel (el: ASTElement, value: string) {
+function genRadioModel (
+    el: ASTElement,
+    value: string,
+    modifiers: ?ASTModifiers
+) {
   if (process.env.NODE_ENV !== 'production' &&
     el.attrsMap.checked != null) {
     warn(
@@ -77,15 +87,17 @@ function genRadioModel (el: ASTElement, value: string) {
       'Declare initial values in the component\'s data option instead.'
     )
   }
-  const valueBinding = getBindingAttr(el, 'value') || 'null'
+  const number = modifiers && modifiers.number
+  let valueBinding = getBindingAttr(el, 'value') || 'null'
+  valueBinding = number ? `_n(${valueBinding})` : valueBinding
   addProp(el, 'checked', `_q(${value},${valueBinding})`)
-  addHandler(el, 'change', `${value}=${valueBinding}`, null, true)
+  addHandler(el, 'change', genAssignmentCode(value, valueBinding), null, true)
 }
 
 function genDefaultModel (
   el: ASTElement,
   value: string,
-  modifiers: ?Object
+  modifiers: ?ASTModifiers
 ): ?boolean {
   if (process.env.NODE_ENV !== 'production') {
     if (el.tag === 'input' && el.attrsMap.value) {
@@ -110,12 +122,13 @@ function genDefaultModel (
   const needCompositionGuard = !lazy && type !== 'range'
   const isNative = el.tag === 'input' || el.tag === 'textarea'
 
-  const valueExpression = isNative
+  let valueExpression = isNative
     ? `$event.target.value${trim ? '.trim()' : ''}`
     : `$event`
-  let code = number || type === 'number'
-    ? `${value}=_n(${valueExpression})`
-    : `${value}=${valueExpression}`
+  valueExpression = number || type === 'number'
+    ? `_n(${valueExpression})`
+    : valueExpression
+  let code = genAssignmentCode(value, valueExpression)
   if (isNative && needCompositionGuard) {
     code = `if($event.target.composing)return;${code}`
   }
@@ -132,14 +145,23 @@ function genDefaultModel (
   addHandler(el, event, code, null, true)
 }
 
-function genSelect (el: ASTElement, value: string) {
+function genSelect (
+    el: ASTElement,
+    value: string,
+    modifiers: ?ASTModifiers
+) {
   if (process.env.NODE_ENV !== 'production') {
     el.children.some(checkOptionWarning)
   }
-  const code = `${value}=Array.prototype.filter` +
+
+  const number = modifiers && modifiers.number
+  const assignment = `Array.prototype.filter` +
     `.call($event.target.options,function(o){return o.selected})` +
-    `.map(function(o){return "_value" in o ? o._value : o.value})` +
+    `.map(function(o){var val = "_value" in o ? o._value : o.value;` +
+    `return ${number ? '_n(val)' : 'val'}})` +
     (el.attrsMap.multiple == null ? '[0]' : '')
+
+  const code = genAssignmentCode(value, assignment)
   addHandler(el, 'change', code, null, true)
 }
 
@@ -155,4 +177,16 @@ function checkOptionWarning (option: any): boolean {
     return true
   }
   return false
+}
+
+function genAssignmentCode (value: string, assignment: string): string {
+  const modelRs = parseModel(value)
+  if (modelRs.idx === null) {
+    return `${value}=${assignment}`
+  } else {
+    return `var $$exp = ${modelRs.exp}, $$idx = ${modelRs.idx};` +
+      `if (!Array.isArray($$exp)){` +
+        `${value}=${assignment}}` +
+      `else{$$exp.splice($$idx, 1, ${assignment})}`
+  }
 }
