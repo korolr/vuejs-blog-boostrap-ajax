@@ -12,3 +12,18 @@
         .col-lg-8.col-lg-offset-2.col-md-10.col-md-offset-1
           h1  Проекты
 </template>
+
+
+<script>
+
+  module.exports = {
+    data: function() {
+      return {
+      }
+    },
+    created: function() {
+      document.title = 'Проекты'
+    }
+
+  }
+</script>

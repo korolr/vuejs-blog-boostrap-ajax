@@ -26,7 +26,7 @@ div
         image: 'img/post-bg.jpg',
         endpoint: 'https://jsonplaceholder.typicode.com/posts',
         posts: [],
-        post: null
+        post: []
       }
     },
     methods: {
@@ -35,6 +35,7 @@ div
         this.posts = response.data
         var postId = this.$route.params.id
         this.post = this.posts[postId]
+        document.title = this.post.title
                    }, function(error){
             //error
         })

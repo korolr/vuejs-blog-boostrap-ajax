@@ -9,6 +9,7 @@ var Blog = require('./views/Blog.vue')
 var Post = require('./views/Post.vue')
 
 var Hello = require('./views/Hello.vue')
+var Test = require('./views/Test.vue')
 
 
 Vue.use(VueRouter)
@@ -31,6 +32,8 @@ new Vue({
   el: '#app',
   components: {
     Hello,
+    Test,
+
   },
   router: router
 })

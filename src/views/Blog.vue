@@ -18,8 +18,7 @@ div
               span.input-group-btn
                 button.btn.btn-info.btn-lg(type='button')
                   i.glyphicon.glyphicon-search
-        h2 {{ search }}
-        .post-preview(v-for="(post, index) in posts")
+        .post-preview(v-for="(post, index) in  filteredPostTitle")
           router-link(:to="{ name: 'post', params: { id: index } }")
             h2.post-title  {{ post.title }}
             h3.post-subtitle  {{ post.body }}
@@ -34,10 +33,10 @@ div
             search: '',
             posts: [],
             endpoint: 'https://jsonplaceholder.typicode.com/posts',
-            loading: false
+            loading: false,
         }
     },
-    
+
     methods: {
     getAllPosts: function(){
         this.$http.get(this.endpoint).then(function(response){
@@ -47,8 +46,16 @@ div
         })
     }
     },
+    computed: {
+    filteredPostTitle: function () {
+      return this.posts.filter(function (post) {
+        return post.title.indexOf(this.search) !== -1
+      }.bind(this))
+    }
+  },
     created: function() {
       this.getAllPosts();
+      document.title = 'Blog vuejs'
       }
 
     }

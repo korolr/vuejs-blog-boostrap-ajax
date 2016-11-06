@@ -60,6 +60,9 @@
 
   },
     },
+    created: function() {
+      document.title = 'Контакты'
+    }
 
   }
 </script>
