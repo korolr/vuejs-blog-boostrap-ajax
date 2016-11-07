@@ -1,7 +1,7 @@
 var Vue = require('vue')
 var VueRouter = require('vue-router')
 var VueResource = require('vue-resource')
-var VuePaginate = require('vue-paginate')
+var VeeValidate = require('vee-validate')
 
 var Contacts = require('./views/Contacts.vue')
 var Projects = require('./views/Projects.vue')
@@ -14,7 +14,7 @@ var Test = require('./views/Test.vue')
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
-Vue.use(VuePaginate)
+Vue.use(VeeValidate)
 
 
 var router = new VueRouter({
