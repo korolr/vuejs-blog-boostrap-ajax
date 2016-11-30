@@ -46,8 +46,8 @@
 
 <script>
 
-  module.exports = {
-    data: function() {
+  export default {
+    data: () => {
       return {
         post: {
           body: '',
@@ -69,9 +69,8 @@
 
   },
     },
-    created: function() {
-      document.title = 'Контакты'
-    }
+    created: () => document.title = 'Контакты'
+
 
   }
 </script>

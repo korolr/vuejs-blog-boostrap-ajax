@@ -26,9 +26,9 @@ div
 
 <script >
 
-  module.exports = {
+  export default  {
 
-    data: function() {
+    data: () => {
         return {
             search: '',
             posts: [],

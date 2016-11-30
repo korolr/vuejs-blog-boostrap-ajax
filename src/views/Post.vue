@@ -20,8 +20,8 @@ div
 
 <script>
 
-  module.exports = {
-    data: function() {
+  export default {
+    data: () => {
       return {
         image: 'img/post-bg.jpg',
         endpoint: 'https://jsonplaceholder.typicode.com/posts',
