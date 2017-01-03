@@ -2,7 +2,7 @@
   "name": "vuejs-blog-boostrap-ajax",
   "description": "Vue.js ",
   "author": "korolr",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack"

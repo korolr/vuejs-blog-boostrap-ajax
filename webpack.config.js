@@ -46,7 +46,7 @@ module.exports = {
       vue: 'vue/dist/vue.js'
     }
   }
-}
+};
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.plugins = (module.exports.plugins || []).concat([
