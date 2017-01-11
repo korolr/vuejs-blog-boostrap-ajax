@@ -28,7 +28,7 @@ div
 
   export default  {
 
-    data: () => {
+    data: function() {
         return {
             search: '',
             posts: [],
@@ -53,7 +53,7 @@ div
       }.bind(this))
     }
   },
-    created: function() {
+    created: () => {
       this.getAllPosts();
       document.title = 'Blog vuejs'
       }
